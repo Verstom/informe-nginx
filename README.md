@@ -2,7 +2,7 @@
 
 ## 1. Título
 
-**Creación y personalización de dos servidores web con Nginx utilizando contenedores Docker y el editor nano**
+**Creación y personalización de dos servidores web con Nginx utilizando contenedores Docker**
 
 ## 2. Tiempo de duración
 
@@ -34,7 +34,7 @@ Para acceder a los servidores desde el computador, se configura la asignación d
 
 Los archivos HTML permiten definir el contenido de las páginas web. Por ejemplo, con etiquetas como `h1` se coloca un título, con `p` se escriben párrafos y con `title` se establece el título que aparece en la pestaña del navegador. Para esta actividad se modifica el archivo `index.html` de cada servidor: en el primero se coloca información institucional y en el segundo información personal.
 
-Para editar estos archivos se utiliza nano, un editor de texto que funciona directamente en la terminal. Se abre con el comando `nano archivo.html`, se escribe o modifica el contenido y se guarda con `Ctrl + O` (confirmando con `Enter`). Para salir del editor se utiliza `Ctrl + X`. Es una herramienta sencilla y muy usada en entornos Linux porque no requiere interfaz gráfica.
+Para escribir el contenido de los archivos se puede utilizar cualquier editor de texto. En esta práctica se utilizó Visual Studio Code para escribir el código HTML y nano, un editor que funciona directamente en la terminal, para abrir y revisar los archivos. Nano se abre con el comando `nano archivo.html`, se guarda con `Ctrl + O` (confirmando con `Enter`) y se sale con `Ctrl + X`.
 
 Para terminar, el comando `docker ps` permite revisar los contenedores que están ejecutándose. El comando `docker cp` sirve para copiar archivos entre el computador y un contenedor. Estos comandos fueron importantes para comprobar que los servidores estaban activos y reemplazar las páginas predeterminadas de Nginx por las páginas creadas para la práctica.
 
@@ -44,7 +44,7 @@ Para realizar esta práctica el estudiante necesita tener claros los siguientes 
 
 - Uso básico de la terminal Git Bash.
 - Comandos básicos de Linux, como `ls`, `cd` y `pwd`.
-- Uso del editor de texto nano en la terminal.
+- Uso de un editor de texto (Visual Studio Code o nano).
 - Estructura básica de un archivo HTML.
 - Manejo del navegador web.
 - Conceptos básicos de servidores web y puertos.
@@ -54,7 +54,7 @@ Para realizar esta práctica el estudiante necesita tener claros los siguientes 
 
 - Implementar dos contenedores con Nginx utilizando la imagen oficial.
 - Configurar puertos diferentes para acceder a cada servidor web.
-- Manipular los archivos HTML de los dos contenedores con el editor nano y el comando `docker cp`.
+- Manipular los archivos HTML de los dos contenedores con un editor de texto y el comando `docker cp`.
 - Publicar una página institucional y otra personal.
 - Comprobar desde el navegador que ambos servidores funcionan correctamente.
 
@@ -63,7 +63,8 @@ Para realizar esta práctica el estudiante necesita tener claros los siguientes 
 - Computador con sistema operativo Windows.
 - Docker Desktop instalado y en funcionamiento (Docker versión 29.6.1).
 - Git Bash para ejecutar los comandos.
-- Editor nano (versión 8.7).
+- Visual Studio Code para escribir el contenido de los archivos HTML.
+- Editor nano (versión 8.7) para abrir y revisar los archivos desde la terminal.
 - Navegador web para comprobar las páginas.
 - Conexión a Internet para descargar la imagen de Nginx, si todavía no se encuentra disponible en el equipo.
 
@@ -137,7 +138,7 @@ docker cp nginx1:/usr/share/nginx/html/index.html ./index1.html
 docker cp nginx2:/usr/share/nginx/html/index.html ./index2.html
 ```
 
-De esta forma se obtuvieron los archivos `index1.html` e `index2.html`, que después se editaron con nano.
+De esta forma se obtuvieron los archivos `index1.html` e `index2.html`, que después se editaron para colocar el contenido de cada página.
 
 ### Paso 6. Personalizar la página institucional
 
@@ -147,11 +148,11 @@ Se abrió el archivo `index1.html` con nano:
 nano index1.html
 ```
 
-Dentro del editor se reemplazó el contenido original por una página con información institucional: un título con el nombre del instituto, la carrera de Desarrollo de Software y una breve explicación de la práctica. Para guardar los cambios se presionó `Ctrl + O` y `Enter`, y para salir `Ctrl + X`.
+El contenido de la página se escribió en un editor de texto (Visual Studio Code): un título con el nombre del instituto, la carrera de Desarrollo de Software y una breve explicación de la práctica. Luego se abrió el archivo con nano desde la terminal para revisar que el código estuviera correcto.
 
-<img src="capturas/04-nano-index1.png" alt="Código de la página institucional en nano" style="max-width:800px">
+<img src="capturas/04-nano-index1.png" alt="Código de la página institucional abierto en nano" style="max-width:800px">
 
-**Figura 8-4.** Código HTML de la página institucional editado en nano.
+**Figura 8-4.** Código HTML de la página institucional abierto en nano.
 
 Después de guardar los cambios, se copió el archivo modificado al primer contenedor:
 
@@ -161,11 +162,11 @@ docker cp index1.html nginx1:/usr/share/nginx/html/index.html
 
 <img src="capturas/05-cp-index1.png" alt="Copia de index1.html al contenedor nginx1" style="max-width:800px">
 
-**Figura 8-5.** Edición con nano y copia de `index1.html` al contenedor `nginx1`.
+**Figura 8-5.** Apertura de `index1.html` con nano y copia al contenedor `nginx1`.
 
 ### Paso 7. Personalizar la página personal
 
-A continuación, se abrió `index2.html` con nano y se modificó su contenido para crear una página personal. Se agregaron un título, información del estudiante y un texto relacionado con lo aprendido durante la práctica. Los cambios se guardaron con `Ctrl + O` y `Enter`, y se salió con `Ctrl + X`.
+A continuación, se preparó `index2.html` con un editor de texto, agregando un título, información del estudiante y un texto relacionado con lo aprendido durante la práctica. Después se abrió con nano para revisarlo.
 
 ```bash
 nano index2.html
@@ -179,7 +180,7 @@ docker cp index2.html nginx2:/usr/share/nginx/html/index.html
 
 <img src="capturas/06-cp-index2.png" alt="Copia de index2.html al contenedor nginx2" style="max-width:800px">
 
-**Figura 8-6.** Edición con nano y copia de `index2.html` al contenedor `nginx2`.
+**Figura 8-6.** Apertura de `index2.html` con nano y copia al contenedor `nginx2`.
 
 ### Paso 8. Verificar las páginas personalizadas
 
@@ -187,7 +188,7 @@ Finalmente, se actualizaron las páginas del navegador para comprobar que los ca
 
 ## 9. Resultados esperados
 
-Al terminar la práctica, se logró crear dos contenedores con Nginx y acceder a cada uno desde el navegador utilizando un puerto diferente. También se modificaron los archivos HTML con el editor nano para mostrar dos páginas con contenidos distintos.
+Al terminar la práctica, se logró crear dos contenedores con Nginx y acceder a cada uno desde el navegador utilizando un puerto diferente. También se modificaron los archivos HTML para mostrar dos páginas con contenidos distintos.
 
 La página del primer servidor presenta información institucional, mientras que la página del segundo servidor contiene información personal del estudiante. Esto permitió entender de forma práctica cómo se pueden ejecutar varios servidores web en Docker y cómo cambiar los archivos que muestran.
 
