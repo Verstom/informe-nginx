@@ -1,277 +1,210 @@
-# Práctica: Servidores web con Nginx utilizando Docker
+# Práctica servidor web
 
 ## 1. Título
 
-**Creación y personalización de dos servidores web con Nginx mediante contenedores Docker**
+**Creación y personalización de dos servidores web con Nginx utilizando contenedores Docker y el editor nano**
 
 ## 2. Tiempo de duración
 
-Tiempo aproximado: 90 minutos.
+90 minutos.
 
 ## 3. Fundamentos
 
-Para realizar esta práctica es necesario conocer qué es un servidor web, para qué sirve Nginx y cómo funciona Docker. Estos conceptos permiten entender cómo se pueden crear y utilizar páginas web sin tener que instalar todos los componentes directamente en el computador.
+Un servidor web es un programa que permite mostrar páginas y otros contenidos a través de una red. Cuando una persona escribe una dirección en el navegador, el servidor recibe la solicitud y envía los archivos necesarios para que la página pueda visualizarse. Los servidores web se utilizan en páginas institucionales, tiendas virtuales, portales de información y muchos otros sitios de Internet. La comunicación entre el navegador (cliente) y el servidor se realiza mediante el protocolo HTTP, como se muestra en la Figura 3-1.
 
-Un **servidor web** es un programa que recibe solicitudes de un navegador y responde enviando el contenido de una página. Por ejemplo, cuando escribimos una dirección en Chrome y aparece un sitio web, existe un servidor que entrega los archivos necesarios para mostrar esa página.
+<img src="capturas/fig3-3-peticion-http.svg" alt="Comunicación cliente-servidor mediante HTTP" style="max-width:800px">
 
-**Nginx** es un servidor web que permite publicar páginas y entregar contenido a los usuarios. Puede trabajar con archivos HTML, imágenes, hojas de estilo y otros recursos de una página web. En esta práctica se utilizó Nginx para crear dos páginas diferentes: una con información institucional y otra con información personal.
+**Figura 3-1.** Comunicación entre el navegador y el servidor web mediante HTTP.
 
-**Docker** es una herramienta que permite ejecutar aplicaciones dentro de contenedores. Un contenedor incluye lo necesario para ejecutar un programa de manera aislada de otros servicios. Esto facilita las pruebas y permite utilizar diferentes aplicaciones en un mismo computador sin tener que instalarlas de la forma tradicional.
+Nginx es un servidor web que permite entregar páginas HTML y otros archivos a los usuarios. Es conocido por su rendimiento y porque también puede utilizarse como intermediario entre diferentes aplicaciones. En esta práctica se utiliza Nginx para publicar dos páginas web sencillas y comprobar que ambas funcionan desde el navegador.
 
-Una imagen de Docker contiene los elementos necesarios para crear un contenedor. En este caso se utilizó la imagen oficial de Nginx para crear dos contenedores independientes. Aunque ambos utilizan el mismo servidor web, cada uno tiene su propio nombre, configuración de ejecución y página HTML.
+Docker es una herramienta que permite ejecutar aplicaciones dentro de contenedores. Un contenedor reúne lo necesario para ejecutar un programa en un entorno separado del resto del sistema. A diferencia de una máquina virtual, que necesita un sistema operativo completo para cada aplicación, los contenedores comparten el núcleo del sistema anfitrión, por lo que son más livianos y se inician más rápido (Figura 3-2). Esto facilita probar aplicaciones sin tener que realizar toda la instalación directamente en el computador, y permite ejecutar varios servicios al mismo tiempo, siempre que se configuren correctamente.
 
-También es importante comprender el uso de los puertos. Un servidor Nginx utiliza normalmente el puerto 80 dentro del contenedor. Sin embargo, para acceder a los dos servidores desde el mismo computador, se asignaron los puertos 8089 y 8090 del equipo. De esta manera, la dirección `http://localhost:8089` permite visualizar el primer servidor y `http://localhost:8090` permite visualizar el segundo.
+<img src="capturas/fig3-2-contenedores-vs-vm.svg" alt="Comparación entre máquinas virtuales y contenedores" style="max-width:800px">
 
-<p align="center">
-  <img src="capturas/fig_esquema.png" alt="Esquema de los dos servidores web" style="max-width:800px;">
-</p>
+**Figura 3-2.** Diferencia entre máquinas virtuales y contenedores.
 
-**Figura 3-1. Esquema de los dos servidores web**
+Una imagen Docker es la base que se utiliza para crear un contenedor. En este caso, se utiliza la imagen oficial de Nginx para crear dos contenedores independientes. Cada uno ejecuta su propio servidor web y tiene sus propios archivos. Aunque los dos utilizan Nginx, pueden mostrar páginas diferentes.
 
-Cuando el usuario escribe una dirección en el navegador, la solicitud llega al puerto del equipo, Docker la redirige al puerto 80 del contenedor correspondiente y Nginx responde entregando el archivo `index.html`. Este recorrido se muestra en la siguiente figura.
+Para acceder a los servidores desde el computador, se configura la asignación de puertos. En esta práctica, el primer servidor utiliza el puerto `8089` del computador y el segundo utiliza el puerto `8090`. Ambos se conectan al puerto `80` dentro de sus respectivos contenedores, que es el puerto habitual de HTTP. De esta manera, se puede abrir cada página desde el navegador utilizando `http://localhost:8089` y `http://localhost:8090` (Figura 3-3).
 
-<p align="center">
-  <img src="capturas/fig_flujo.png" alt="Flujo de una solicitud al servidor Nginx" style="max-width:800px;">
-</p>
+<img src="capturas/fig3-1-esquema-servidores.svg" alt="Esquema de dos contenedores Nginx conectados a diferentes puertos" style="max-width:800px">
 
-**Figura 3-2. Recorrido de una solicitud desde el navegador hasta la página**
+**Figura 3-3.** Esquema básico del funcionamiento de los dos servidores web.
 
-Por último, los archivos HTML permiten definir la estructura y el contenido de las páginas. Para personalizarlas, se copiaron los archivos `index.html` originales de los contenedores al computador, se editaron en Visual Studio Code y luego se copiaron nuevamente a sus respectivos contenedores.
+Los archivos HTML permiten definir el contenido de las páginas web. Por ejemplo, con etiquetas como `h1` se coloca un título, con `p` se escriben párrafos y con `title` se establece el título que aparece en la pestaña del navegador. Para esta actividad se modifica el archivo `index.html` de cada servidor: en el primero se coloca información institucional y en el segundo información personal.
 
-Con esta práctica pude relacionar el uso de la terminal, la edición de archivos HTML y la administración de contenedores. Además, comprobé que dos servidores web pueden ejecutarse al mismo tiempo utilizando diferentes puertos.
+Para editar estos archivos se utiliza nano, un editor de texto que funciona directamente en la terminal. Se abre con el comando `nano archivo.html`, se escribe o modifica el contenido y se guarda con `Ctrl + O` (confirmando con `Enter`). Para salir del editor se utiliza `Ctrl + X`. Es una herramienta sencilla y muy usada en entornos Linux porque no requiere interfaz gráfica.
+
+Para terminar, el comando `docker ps` permite revisar los contenedores que están ejecutándose. El comando `docker cp` sirve para copiar archivos entre el computador y un contenedor. Estos comandos fueron importantes para comprobar que los servidores estaban activos y reemplazar las páginas predeterminadas de Nginx por las páginas creadas para la práctica.
 
 ## 4. Conocimientos previos
 
-Para realizar esta práctica fue necesario tener conocimientos básicos sobre los siguientes temas:
+Para realizar esta práctica el estudiante necesita tener claros los siguientes temas:
 
-- Comandos básicos de Linux y Git Bash.
-- Manejo de carpetas y archivos desde la terminal.
-- Uso de un navegador web.
-- Edición de archivos HTML en Visual Studio Code.
-- Conceptos básicos de servidores web.
-- Uso de Docker Desktop y de la terminal para ejecutar comandos.
-- Conocimiento de las direcciones `localhost` y de los puertos de acceso.
+- Uso básico de la terminal Git Bash.
+- Comandos básicos de Linux, como `ls`, `cd` y `pwd`.
+- Uso del editor de texto nano en la terminal.
+- Estructura básica de un archivo HTML.
+- Manejo del navegador web.
+- Conceptos básicos de servidores web y puertos.
+- Uso inicial de Docker y sus contenedores.
 
 ## 5. Objetivos a alcanzar
 
-- Implementar dos contenedores con Nginx utilizando Docker.
-- Asignar puertos diferentes para acceder a cada servidor web.
-- Manipular los archivos `index.html` de los dos contenedores.
-- Publicar una página con información institucional y otra con información personal.
-- Comprobar mediante el navegador que ambos servidores funcionan correctamente.
-- Registrar el procedimiento y los resultados mediante capturas de pantalla.
+- Implementar dos contenedores con Nginx utilizando la imagen oficial.
+- Configurar puertos diferentes para acceder a cada servidor web.
+- Manipular los archivos HTML de los dos contenedores con el editor nano y el comando `docker cp`.
+- Publicar una página institucional y otra personal.
+- Comprobar desde el navegador que ambos servidores funcionan correctamente.
 
 ## 6. Equipo necesario
 
 - Computador con sistema operativo Windows.
 - Docker Desktop instalado y en funcionamiento (Docker versión 29.6.1).
 - Git Bash para ejecutar los comandos.
-- Visual Studio Code para editar los archivos HTML y Markdown.
-- Navegador web, como Google Chrome.
-- Conexión a Internet para descargar la imagen de Nginx y consultar documentación.
-- Imagen de Docker `nginx`.
+- Editor nano (versión 8.7).
+- Navegador web para comprobar las páginas.
+- Conexión a Internet para descargar la imagen de Nginx, si todavía no se encuentra disponible en el equipo.
 
 ## 7. Material de apoyo
 
 - Documentación oficial de Docker: https://docs.docker.com/
 - Documentación oficial de Nginx: https://nginx.org/en/docs/
-- Documentación de Docker sobre la ejecución de contenedores: https://docs.docker.com/engine/containers/run/
-- Guía de la asignatura y plantilla proporcionada por el docente: https://github.com/maguaman2/informe-tendencias
+- Imagen oficial de Nginx en Docker Hub: https://hub.docker.com/_/nginx
+- Manual del editor nano: https://www.nano-editor.org/docs.php
+- Guía de la asignatura.
 
 ## 8. Procedimiento
 
-### Paso 1. Iniciar Docker Desktop
+### Paso 1. Verificar Docker y nano
 
-Primero abrí Docker Desktop y esperé a que el servicio estuviera funcionando. Después abrí Git Bash para ejecutar los comandos de la práctica.
+Primero se abrió Docker Desktop y se comprobó que el motor de Docker estuviera activo. Después, desde Git Bash, se ejecutó el comando `docker --version` para confirmar que Docker estaba instalado.
 
-Para comprobar que Docker estaba disponible, utilicé:
+<img src="capturas/01-docker-version.png" alt="Verificación de la versión de Docker" style="max-width:800px">
+
+**Figura 8-1.** Verificación de la versión de Docker instalada.
+
+Luego, ubicado en la carpeta de trabajo `informe-nginx`, se verificó que el editor nano estuviera disponible con el comando `nano --version`.
 
 ```bash
-docker --version
+nano --version
 ```
 
-Este comando muestra la versión instalada de Docker.
+<img src="capturas/02-nano-version.png" alt="Verificación de la versión de nano" style="max-width:800px">
 
-<p align="center">
-  <img src="capturas/im1.png" alt="Verificación de la versión de Docker" style="max-width:800px;">
-</p>
+**Figura 8-2.** Verificación de la versión del editor nano.
 
-**Figura 8-1. Verificación de la versión de Docker**
+### Paso 2. Crear el primer servidor web
 
-### Paso 2. Crear el primer contenedor Nginx
-
-Ejecuté el siguiente comando para crear el primer servidor web:
+Se ejecutó el siguiente comando para crear el primer contenedor con Nginx:
 
 ```bash
 docker run -d --name nginx1 -p 8089:80 nginx
 ```
 
-Con este comando se creó un contenedor llamado `nginx1`. El puerto 8089 del computador quedó conectado con el puerto 80 del contenedor, donde funciona Nginx. Como la imagen `nginx` no estaba descargada, Docker la descargó automáticamente.
+Con este comando se creó un contenedor llamado `nginx1`. La opción `-d` permite ejecutarlo en segundo plano y `-p 8089:80` conecta el puerto 8089 del computador con el puerto 80 del contenedor. Como la imagen de Nginx no estaba disponible localmente, Docker la descargó automáticamente.
 
-### Paso 3. Crear el segundo contenedor Nginx
+### Paso 3. Crear el segundo servidor web
 
-Después ejecuté:
+Luego se ejecutó el siguiente comando:
 
 ```bash
 docker run -d --name nginx2 -p 8090:80 nginx
 ```
 
-Así se creó un segundo contenedor llamado `nginx2`, utilizando el puerto 8090 del computador. Se asignó un puerto diferente para poder acceder a los dos servidores al mismo tiempo.
+Así se creó un segundo contenedor llamado `nginx2`, utilizando el puerto 8090 del computador. Se asignó un puerto diferente para poder acceder a los dos servidores sin que exista un conflicto.
 
-<p align="center">
-  <img src="capturas/Im2.png" alt="Creación de los contenedores nginx1 y nginx2" style="max-width:800px;">
-</p>
+<img src="capturas/03-docker-run.png" alt="Revisión de contenedores y creación de nginx1 y nginx2" style="max-width:800px">
 
-**Figura 8-2. Creación de los contenedores nginx1 y nginx2**
+**Figura 8-3.** Revisión de contenedores con `docker ps` y creación de `nginx1` y `nginx2`.
 
-### Paso 4. Comprobar los contenedores
+### Paso 4. Comprobar el funcionamiento de los servidores
 
-Para revisar que los contenedores estuvieran ejecutándose, utilicé:
+Se abrió el navegador y se ingresaron las siguientes direcciones:
 
-```bash
-docker ps
-```
+- Primer servidor: http://localhost:8089
+- Segundo servidor: http://localhost:8090
 
-En el resultado comprobé que aparecían los contenedores `nginx1` y `nginx2`, junto con sus puertos asignados (se puede ver en la parte superior de la Figura 8-4).
-
-Además, abrí en el navegador `http://localhost:8090` y comprobé que el servidor respondía con la página de bienvenida que Nginx trae por defecto, antes de modificarla.
-
-<p align="center">
-  <img src="capturas/Im3.png" alt="Página de bienvenida por defecto de Nginx" style="max-width:800px;">
-</p>
-
-**Figura 8-3. Página de bienvenida por defecto de Nginx**
+En ambas se mostró la página predeterminada de bienvenida de Nginx, lo que permitió comprobar que los dos contenedores estaban funcionando antes de modificar su contenido.
 
 ### Paso 5. Copiar los archivos HTML al computador
 
-Para modificar las páginas, primero copié los archivos originales de Nginx desde cada contenedor:
+Para modificar las páginas, se copiaron los archivos `index.html` originales de los contenedores a la carpeta de trabajo mediante los siguientes comandos:
 
 ```bash
 docker cp nginx1:/usr/share/nginx/html/index.html ./index1.html
 docker cp nginx2:/usr/share/nginx/html/index.html ./index2.html
 ```
 
-Los archivos `index1.html` e `index2.html` quedaron en mi carpeta de usuario, desde donde pude abrirlos con Visual Studio Code mediante el comando `code index1.html`.
-
-<p align="center">
-  <img src="capturas/Im4.png" alt="Contenedores en ejecución y copia de los archivos HTML" style="max-width:800px;">
-</p>
-
-**Figura 8-4. Contenedores en ejecución y copia de los archivos HTML**
+De esta forma se obtuvieron los archivos `index1.html` e `index2.html`, que después se editaron con nano.
 
 ### Paso 6. Personalizar la página institucional
 
-Abrí el archivo `index1.html` en Visual Studio Code y escribí una primera versión del contenido institucional.
+Se abrió el archivo `index1.html` con nano:
 
-<p align="center">
-  <img src="capturas/Im5.png" alt="Primera versión del archivo HTML institucional" style="max-width:800px;">
-</p>
+```bash
+nano index1.html
+```
 
-**Figura 8-5. Primera versión del archivo HTML institucional**
+Dentro del editor se reemplazó el contenido original por una página con información institucional: un título con el nombre del instituto, la carrera de Desarrollo de Software y una breve explicación de la práctica. Para guardar los cambios se presionó `Ctrl + O` y `Enter`, y para salir `Ctrl + X`.
 
-Luego corregí el archivo y lo dejé con la información institucional del Instituto, el área de Desarrollo de Software y una breve descripción de la práctica.
+<img src="capturas/04-nano-index1.png" alt="Código de la página institucional en nano" style="max-width:800px">
 
-<p align="center">
-  <img src="capturas/Im7.png" alt="Versión final del archivo HTML institucional" style="max-width:800px;">
-</p>
+**Figura 8-4.** Código HTML de la página institucional editado en nano.
 
-**Figura 8-6. Versión final del archivo HTML institucional**
-
-Después guardé los cambios con `Ctrl + S` y copié el archivo actualizado al primer contenedor:
+Después de guardar los cambios, se copió el archivo modificado al primer contenedor:
 
 ```bash
 docker cp index1.html nginx1:/usr/share/nginx/html/index.html
 ```
 
-<p align="center">
-  <img src="capturas/Im6.png" alt="Copia del archivo index1.html al contenedor nginx1" style="max-width:800px;">
-</p>
+<img src="capturas/05-cp-index1.png" alt="Copia de index1.html al contenedor nginx1" style="max-width:800px">
 
-**Figura 8-7. Copia del archivo index1.html al contenedor nginx1**
+**Figura 8-5.** Edición con nano y copia de `index1.html` al contenedor `nginx1`.
 
-### Paso 7. Comprobar la primera página web
+### Paso 7. Personalizar la página personal
 
-Abrí el navegador e ingresé a la siguiente dirección:
+A continuación, se abrió `index2.html` con nano y se modificó su contenido para crear una página personal. Se agregaron un título, información del estudiante y un texto relacionado con lo aprendido durante la práctica. Los cambios se guardaron con `Ctrl + O` y `Enter`, y se salió con `Ctrl + X`.
 
-http://localhost:8089
+```bash
+nano index2.html
+```
 
-Comprobé que Nginx mostraba el contenido institucional que había preparado.
-
-<p align="center">
-  <img src="capturas/Im10.png" alt="Página institucional en el navegador" style="max-width:800px;">
-</p>
-
-**Figura 8-8. Página institucional ejecutada en Nginx**
-
-### Paso 8. Personalizar la página personal
-
-Luego abrí `index2.html` en Visual Studio Code y lo edité para mostrar una página personal con información del estudiante y de los temas que está aprendiendo.
-
-<p align="center">
-  <img src="capturas/Im9.png" alt="Código HTML de la página personal" style="max-width:800px;">
-</p>
-
-**Figura 8-9. Edición del archivo HTML personal**
-
-Guardé los cambios con `Ctrl + S` y actualicé el archivo del segundo contenedor mediante el siguiente comando:
+Después de guardar los cambios, se copió el archivo al segundo contenedor:
 
 ```bash
 docker cp index2.html nginx2:/usr/share/nginx/html/index.html
 ```
 
-<p align="center">
-  <img src="capturas/Im8.png" alt="Copia del archivo index2.html al contenedor nginx2" style="max-width:800px;">
-</p>
+<img src="capturas/06-cp-index2.png" alt="Copia de index2.html al contenedor nginx2" style="max-width:800px">
 
-**Figura 8-10. Copia del archivo index2.html al contenedor nginx2**
+**Figura 8-6.** Edición con nano y copia de `index2.html` al contenedor `nginx2`.
 
-### Paso 9. Comprobar la segunda página web
+### Paso 8. Verificar las páginas personalizadas
 
-Finalmente, ingresé a:
-
-http://localhost:8090
-
-Verifiqué que apareciera la página personal y que el contenido fuera diferente al del primer servidor.
-
-<p align="center">
-  <img src="capturas/Im11.png" alt="Página personal en el navegador" style="max-width:800px;">
-</p>
-
-**Figura 8-11. Página personal ejecutada en Nginx**
+Finalmente, se actualizaron las páginas del navegador para comprobar que los cambios se habían aplicado correctamente. En el puerto 8089 se mostró la página institucional y en el puerto 8090 la página personal. Las capturas de este resultado se presentan en la sección 9.
 
 ## 9. Resultados esperados
 
-Al finalizar la práctica, se esperaba tener dos contenedores Nginx ejecutándose al mismo tiempo, cada uno con un puerto diferente y una página HTML personalizada.
+Al terminar la práctica, se logró crear dos contenedores con Nginx y acceder a cada uno desde el navegador utilizando un puerto diferente. También se modificaron los archivos HTML con el editor nano para mostrar dos páginas con contenidos distintos.
 
-Los resultados obtenidos fueron los siguientes:
+La página del primer servidor presenta información institucional, mientras que la página del segundo servidor contiene información personal del estudiante. Esto permitió entender de forma práctica cómo se pueden ejecutar varios servidores web en Docker y cómo cambiar los archivos que muestran.
 
-- Se crearon los contenedores `nginx1` y `nginx2` (Figuras 8-2 y 8-4).
-- Se asignó el puerto 8089 al primer servidor y el puerto 8090 al segundo.
-- Se editaron los archivos HTML desde Visual Studio Code (Figuras 8-6 y 8-9).
-- Se publicó una página institucional en el primer contenedor.
-- Se publicó una página personal en el segundo contenedor.
-- Se comprobó desde el navegador que las dos páginas se podían abrir por separado.
+<img src="capturas/07-resultado-8089.png" alt="Página institucional en localhost:8089" style="max-width:800px">
 
-Las capturas finales de la práctica son las siguientes:
+**Figura 9-1.** Resultado final: página institucional en `http://localhost:8089`.
 
-<p align="center">
-  <img src="capturas/Im10.png" alt="Resultado final: servidor 1 en localhost:8089" style="max-width:800px;">
-</p>
+<img src="capturas/08-resultado-8090.png" alt="Página personal en localhost:8090" style="max-width:800px">
 
-**Figura 9-1. Resultado final: página institucional en `localhost:8089`**
-
-<p align="center">
-  <img src="capturas/Im11.png" alt="Resultado final: servidor 2 en localhost:8090" style="max-width:800px;">
-</p>
-
-**Figura 9-2. Resultado final: página personal en `localhost:8090`**
-
-En conjunto, las capturas del apartado 8 y estos resultados permiten comprobar que los dos servidores fueron creados y personalizados correctamente.
+**Figura 9-2.** Resultado final: página personal en `http://localhost:8090`.
 
 ## 10. Bibliografía
 
-Docker, Inc. (s. f.). *Docker documentation*. https://docs.docker.com/
+Docker. (s. f.). *Docker Docs*. https://docs.docker.com/
 
-Docker, Inc. (s. f.). *Run containers*. Docker Docs. https://docs.docker.com/engine/containers/run/
+Docker. (s. f.). *Nginx Official Image*. Docker Hub. https://hub.docker.com/_/nginx
 
-Nginx, Inc. (s. f.). *Nginx documentation*. https://nginx.org/en/docs/
+F5, Inc. (s. f.). *NGINX documentation*. https://nginx.org/en/docs/
+
+Free Software Foundation. (s. f.). *GNU nano*. https://www.nano-editor.org/
